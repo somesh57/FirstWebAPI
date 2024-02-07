@@ -4,11 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Add Details</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="text-right">
+    <a asp-action="Create" class="btn btn-success">Create New</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -24,15 +25,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-           @*  <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.MobileNumber)
-                )
             </th>
-
-
             <th></th>
         </tr>
     </thead>
@@ -46,25 +41,22 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
-
                 <td>
                     @Html.DisplayFor(modelItem => item.LatName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
-               @*  <td>
-                    @Html.DisplayFor(modelItem => item.Password)
-                </td> *@
                 <td>
                     @Html.DisplayFor(modelItem => item.MobileNumber)
                 </td>
-
-                @* <td>
-            @Html.ActionLink("Edit", "Edit", new { / id=item.PrimaryKey / }) |
-            @Html.ActionLink("Details", "Details", new { / id=item.PrimaryKey / }) |
-            @Html.ActionLink("Delete", "Delete", new { / id=item.PrimaryKey / })
-            </td> *@
+                <td>
+                    <div class="btn-group" role="group" aria-label="Actions">
+                        <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-warning">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.UserId" class="btn btn-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.UserId" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?')">Delete</a>
+                    </div>
+                </td>
             </tr>
         }
     </tbody>

@@ -11,6 +11,7 @@ namespace RegistrationPage.Data
         }
 
         public DbSet<Registration> registrations { get; set; }
+       
 
     }
 }

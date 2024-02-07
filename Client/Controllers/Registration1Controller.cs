@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RegistrationPage.Models;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using WebApp.Models;
-//using RegistrationPage.Models;
-
 
 namespace WebApp.Controllers
 {
@@ -19,7 +20,7 @@ namespace WebApp.Controllers
             _client.BaseAddress = baseAddress;
         }
 
-        [HttpGet] 
+        [HttpGet]
         public IActionResult Index()
         {
             HttpResponseMessage response = _client.GetAsync("Registration/GetRegistrations").Result;
@@ -31,20 +32,11 @@ namespace WebApp.Controllers
             return View(registrations);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Create(Registration registration)
-        //{
-        //    var response = await _client.PostAsJsonAsync("Registration/PostRegistration", registration);
-        //    response.EnsureSuccessStatusCode();
-
-        //    return RedirectToAction("Index");
-        //}
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Registration1/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Registration1 reg)
@@ -57,17 +49,86 @@ namespace WebApp.Controllers
             }
             catch (Exception ex)
             {
-              ModelState.AddModelError(string.Empty, "An error occurred while creating the registration.");
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the registration.");
                 return View(reg);
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult> Edit(int id)
+        {
+            var registration = await GetRegistrationById(id);
+            if (registration == null)
+            {
+                return NotFound();
+            }
 
-        // Implement Edit, Details, and Delete actions similarly...
+            return View(registration);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int id, Registration1 reg)
+        {
+            try
+            {
+                
+                    HttpResponseMessage response = await _client.PutAsJsonAsync($"Registration/PutRegistration/{id}", reg);
+                    response.EnsureSuccessStatusCode();
+                    return RedirectToAction("Index");
+                
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while updating the registration.");
+                return View(reg);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Details(int id)
+        {
+            var registration = await GetRegistrationById(id);
+            if (registration == null)
+            {
+                return NotFound();
+            }
+
+            return View(registration);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var registration = await GetRegistrationById(id);
+            if (registration == null)
+            {
+                return NotFound();
+            }
+
+            return View(registration);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                HttpResponseMessage response = await _client.DeleteAsync($"Registration/DeleteRegistration/{id}");
+                response.EnsureSuccessStatusCode();
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while deleting the registration.");
+                return RedirectToAction("Delete", new { id });
+            }
+        }
 
         private async Task<Registration1> GetRegistrationById(int id)
         {
-            var response = await _client.GetAsync($"api/Registration/{id}");
+            var response = await _client.GetAsync($"Registration/GetRegistration/{id}");
             response.EnsureSuccessStatusCode();
 
             var registrationJson = await response.Content.ReadAsStringAsync();
@@ -75,4 +136,3 @@ namespace WebApp.Controllers
         }
     }
 }
-
